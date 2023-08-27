@@ -6,8 +6,6 @@ import StatusIndicator from './components/StatusIndicator.vue'
 const socket = ref(null)
 const data = ref(null)
 const connected = ref(false)
-const debug = ref('')
-const debug2 = ref('')
 
 onMounted(() => {
     connect()
@@ -26,15 +24,11 @@ const connect = () => {
     socket.value.onopen = () => {
         console.log('Connection opened')
         connected.value = true
-        send('{"test": 1}')
     }
 
     socket.value.onmessage = (event) => {
-        debug2.value = ''
         const parsed = JSON.parse(event.data)
-        debug2.value = parsed
         if (parsed.error) {
-            debug.value = parsed.error
             console.error('WebSocket Error: ', parsed.error)
         } else
             data.value = parsed.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
@@ -47,9 +41,7 @@ const connect = () => {
 }
 
 const send = (data) => {
-    debug.value = ''
     if (connected.value && socket.value && socket.value.readyState === WebSocket.OPEN) {
-        debug.value = data
         socket.value.send(data)
     }
 }
@@ -57,7 +49,6 @@ const send = (data) => {
 
 <template>
     <div id="container">
-        debug {{ debug }} debug2 {{ debug2 }} data {{ data }}
         <TouchScreen :data="data" @send-move="send($event)" />
         <StatusIndicator :isConnected="connected" />
     </div>
