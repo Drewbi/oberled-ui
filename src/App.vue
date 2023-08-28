@@ -28,21 +28,16 @@ const connect = () => {
     }
 
     socket.value.onmessage = (event) => {
-        if (event.data === "ping") {
-            socket.value.send("pong")
-        } else {
-            const parsed = JSON.parse(event.data)
-            if (!parsed) {
-                console.error('Failed to parse message')
-            }
-            else if (parsed.error) {
-                console.error('WebSocket Error: ', parsed.error)
-            } else {
-                if (parsed.positions) data.value = parsed.positions.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
-                if (parsed.screenOnline !== undefined) screenOnline.value = parsed.screenOnline
-            }
+        const parsed = JSON.parse(event.data)
+        if (!parsed) {
+            console.error('Failed to parse message')
         }
-
+        else if (parsed.error) {
+            console.error('WebSocket Error: ', parsed.error)
+        } else {
+            if (parsed.positions) data.value = parsed.positions.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
+            if (parsed.screenOnline !== undefined) screenOnline.value = parsed.screenOnline
+        }
     }
 
     socket.value.onerror = (error) => {
