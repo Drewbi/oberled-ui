@@ -1,6 +1,6 @@
 <template>
     <div id="connection">
-        <span>Status: </span>
+        <span>{{ title }}: </span>
         <div :style="circleStyle"></div>
     </div>
 </template>
@@ -8,7 +8,7 @@
 <script setup>
 import { computed } from 'vue'
 
-const props = defineProps(['isConnected'])
+const props = defineProps(['title', 'isConnected'])
 
 const circleStyle = computed(() => ({
     width: '15px',

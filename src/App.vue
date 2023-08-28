@@ -6,6 +6,7 @@ import StatusIndicator from './components/StatusIndicator.vue'
 const socket = ref(null)
 const data = ref(null)
 const connected = ref(false)
+const screenOnline = ref(false)
 
 onMounted(() => {
     connect()
@@ -27,11 +28,21 @@ const connect = () => {
     }
 
     socket.value.onmessage = (event) => {
-        const parsed = JSON.parse(event.data)
-        if (parsed.error) {
-            console.error('WebSocket Error: ', parsed.error)
-        } else
-            data.value = parsed.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
+        if (event.data === "ping") {
+            socket.value.send("pong")
+        } else {
+            const parsed = JSON.parse(event.data)
+            if (!parsed) {
+                console.error('Failed to parse message')
+            }
+            else if (parsed.error) {
+                console.error('WebSocket Error: ', parsed.error)
+            } else {
+                if (parsed.positions) data.value = parsed.positions.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
+                if (parsed.screenOnline !== undefined) screenOnline.value = parsed.screenOnline
+            }
+        }
+
     }
 
     socket.value.onerror = (error) => {
@@ -50,7 +61,10 @@ const send = (data) => {
 <template>
     <div id="container">
         <TouchScreen :data="data" @send-move="send($event)" />
-        <StatusIndicator :isConnected="connected" />
+        <div id="indicators">
+            <StatusIndicator title="Server" :isConnected="connected" />
+            <StatusIndicator title="Screen" :isConnected="screenOnline" />
+        </div>
     </div>
 </template>
 
@@ -62,5 +76,10 @@ const send = (data) => {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+
+#indicators {
+    display: flex;
+    gap: 20px;
 }
 </style>
