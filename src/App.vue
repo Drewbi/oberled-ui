@@ -36,7 +36,6 @@ const connect = () => {
             console.error('WebSocket Error: ', parsed.error)
         } else {
             if (parsed.positions) data.value = parsed.positions.filter((pos) => pos && pos.x !== undefined && pos.y !== undefined)
-            if (parsed.screenOnline !== undefined) screenOnline.value = parsed.screenOnline
         }
     }
 
@@ -58,7 +57,6 @@ const send = (data) => {
         <TouchScreen :data="data" @send-move="send($event)" />
         <div id="indicators">
             <StatusIndicator title="Server" :isConnected="connected" />
-            <StatusIndicator title="Screen" :isConnected="screenOnline" />
         </div>
     </div>
 </template>
