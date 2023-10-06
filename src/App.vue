@@ -58,6 +58,8 @@ const send = (data) => {
         <div id="indicators">
             <StatusIndicator title="Server" :isConnected="connected" />
         </div>
+        
+        <a href="https://github.com/Drewbi" target="_blank" rel="noopener noreferrer"><img id="github" src="/github.png" alt="github logo"></a>
     </div>
 </template>
 
@@ -74,5 +76,18 @@ const send = (data) => {
 #indicators {
     display: flex;
     gap: 20px;
+}
+
+#github {
+    margin-top: 50px;
+    width: 64px;
+    height: 64px;
+    -webkit-filter: invert() brightness(30%);
+    filter: invert() brightness(30%);
+}
+
+#github:hover {
+    -webkit-filter: invert() brightness(50%);
+    filter: invert() brightness(50%);
 }
 </style>
